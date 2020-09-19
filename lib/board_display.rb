@@ -1,4 +1,10 @@
 module BoardDisplay
+
+  def display(board_content)
+    display_obj = Displayer.new board_content
+    display_obj.display
+  end
+
   class Displayer
     @@GRID = {
       top_left: "\u250C",
@@ -13,11 +19,6 @@ module BoardDisplay
       right_inter: "\u2524",
       left_inter: "\u251C"
     }
-
-    def self.display(board_content)
-      display_obj = Displayer.new board_content
-      display_obj.display
-    end
 
     def initialize(board_content)
       @content = board_content

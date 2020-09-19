@@ -11,7 +11,7 @@ class Board
   def initialize
     @content = Array.new(@@SIZE[:x]) {Array.new(@@SIZE[:y]) {' '}}
     populate_board @content
-    Displayer.display @content
+    display @content
   end
 
 
