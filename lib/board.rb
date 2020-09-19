@@ -9,16 +9,23 @@ class Board
   def initialize
     @content = Array.new(@@SIZE[:x]) {Array.new(@@SIZE[:y]) {' '}}
     add_pawns
+    add_ranked
     Displayer.display @content
   end
 
   def add_pawns
-    @content[1].map! do |cell|
-      cell = Piece.new('p', :p1)
+    0.upto 7 do |i|
+      @content[1][i] = Piece.new('p', :p1)
+      @content[6][i] = Piece.new('p', :p2)
     end
+  end
 
-    @content[6].map! do |cell|
-      cell = Piece.new('p', :p2)
+  def add_ranked
+    pieces = ['R', 'k', 'B', 'K', 'Q', 'B', 'k', 'R']
+
+    0.upto 7 do |i|
+      @content[0][i] = Piece.new(pieces[i], :p1)
+      @content[7][i] = Piece.new(pieces[i], :p2)
     end
   end
 
