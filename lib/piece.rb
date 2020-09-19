@@ -16,10 +16,23 @@ class Piece
     @type = type
     @icon = @@ICONS[type.to_sym]
     @team = team
+    @selected = false
   end
 
   def color(str)
-    @team == :p1 ? str.red : str.blue
+    if @selected
+      @team == :p1 ? str.pink : str.light_blue
+    else
+      @team == :p1 ? str.red : str.blue
+    end
+  end
+
+  def toggle
+    @selected = !@selected
+  end
+
+  def deselect
+    @selected = false
   end
 
   def to_s

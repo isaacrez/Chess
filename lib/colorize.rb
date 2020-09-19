@@ -7,8 +7,16 @@ class String
   def red
     colorize(31)
   end
+
+  def pink
+    colorize(35)
+  end
   
   def blue
     colorize(34)
+  end
+
+  def light_blue
+    colorize(36)
   end
 end
