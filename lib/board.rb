@@ -47,7 +47,24 @@ class Board
   end
 
   def get_input
-    input = gets.chomp.split(',').map!(&:to_i)
+    begin
+      get_valid_input
+    rescue
+      puts "Invalid input! Use two numbers, separated by a comma [i.e. 1,0]"
+      print "Select a position:\t"
+      get_input
+    end
+  end
+
+  def get_valid_input
+    input = gets.chomp.split(',')
+    raise "Wrong number of arguments" unless input.length == 2
+    raise "Non-numeric arguments" unless is_numeric?(input[0]) && is_numeric?(input[1])
+    input.map!(&:to_i)
+  end
+
+  def is_numeric?(string)
+    '0' <= string && string <= '9'
   end
 
   def switch
