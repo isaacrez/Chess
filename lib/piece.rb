@@ -65,7 +65,7 @@ class King < Piece
 
   def move_options(board)
     rel_moves = [[1, 0], [1, 1], [0, 1], [-1, 0], [-1, -1], [0, -1], [-1, 1], [1, -1]]
-    return move_positions_by rel_moves
+    return move_positions_by rel_moves, board
   end
 end
 
@@ -78,7 +78,7 @@ class Queen < Piece
   end
 
   def move_options(board)
-    return move_positions_by omnidirectional_move
+    return move_positions_by omnidirectional_move, board
   end
 end
 
@@ -91,7 +91,7 @@ class Rook < Piece
   end
 
   def move_options(board)
-    return move_positions_by horizontal_move
+    return move_positions_by horizontal_move, board
   end
 end
 
@@ -104,7 +104,7 @@ class Bishop < Piece
   end
 
   def move_options(board)
-    return move_positions_by diagonal_move
+    return move_positions_by diagonal_move, board
   end
 end
 
