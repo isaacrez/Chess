@@ -1,7 +1,7 @@
-require './lib/board_config'
-require './lib/board_display'
-require './lib/board_populate'
-require './lib/piece'
+require './lib/board/config'
+require './lib/board/display'
+require './lib/board/populate'
+require './lib/piece/base'
 require './lib/turn_manager'
 
 class Board

@@ -1,4 +1,4 @@
-require './lib/board_config'
+require './lib/board/config'
 
 module MovementLogic
   include BoardConfig

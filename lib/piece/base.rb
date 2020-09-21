@@ -1,5 +1,5 @@
 require './lib/colorize'
-require './lib/piece_modules'
+require './lib/piece/movement'
 
 class Piece
   include MovementLogic
