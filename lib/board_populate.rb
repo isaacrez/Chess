@@ -1,4 +1,7 @@
+require './lib/board_config'
+
 module BoardPopulate
+  include BoardConfig
 
   def populate_board(content)
     populater = BoardPopulater.new(content)
@@ -20,7 +23,7 @@ module BoardPopulate
     end
 
     def add_pawns
-      0.upto 7 do |i|
+      0.upto @@SIZE[:x] do |i|
         @content[1][i] = Piece.make('pawn', :p1, [i, 1])
         @content[6][i] = Piece.make('pawn', :p2, [i, 6])
       end
@@ -29,7 +32,7 @@ module BoardPopulate
     def add_ranked
       pieces = ['rook', 'knight', 'bishop', 'king', 'queen', 'bishop', 'knight', 'rook']
 
-      0.upto 7 do |i|
+      0.upto @@SIZE[:x] do |i|
         @content[0][i] = Piece.make(pieces[i], :p1, [i, 0])
         @content[7][i] = Piece.make(pieces[i], :p2, [i, 7])
       end
