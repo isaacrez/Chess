@@ -38,12 +38,17 @@ class Piece
     end
   end
 
-  def move_positions_from(moves)
+  def move_positions_by(moves)
     for move in moves do
-      move[0] += @position[0]
-      move[1] += @position[1]
+      move_pos_by move
     end
     return moves   
+  end
+
+  def move_pos_by(move)
+    move[0] += @position[0]
+    move[1] += @position[1]
+    return move
   end
 
   public
@@ -102,9 +107,9 @@ class King < Piece
     @icon = "\u265A"
   end
 
-  def move_options
+  def move_options(board)
     rel_moves = [[1, 0], [1, 1], [0, 1], [-1, 0], [-1, -1], [0, -1], [-1, 1], [1, -1]]
-    return move_positions_from rel_moves
+    return move_positions_by rel_moves
   end
 end
 
@@ -116,8 +121,8 @@ class Queen < Piece
     @icon = "\u265B"
   end
 
-  def move_options
-    return move_positions_from omnidirectional_move
+  def move_options(board)
+    return move_positions_by omnidirectional_move
   end
 end
 
@@ -129,8 +134,8 @@ class Rook < Piece
     @icon = "\u265C"
   end
 
-  def move_options
-    return move_positions_from horizontal_move
+  def move_options(board)
+    return move_positions_by horizontal_move
   end
 end
 
@@ -142,8 +147,8 @@ class Bishop < Piece
     @icon = "\u265D"
   end
 
-  def move_options
-    return move_positions_from diagonal_move
+  def move_options(board)
+    return move_positions_by diagonal_move
   end
 end
 
@@ -153,12 +158,12 @@ class Knight < Piece
     @icon = "\u265E"
   end
 
-  def move_options
+  def move_options(board)
     rel_moves = [
       [1, 2], [2, 1], [-1, 2], [-2, 1],
       [-1, -2], [-2, -1], [1, -2], [2, -1]  
     ]
-    return move_positions_from(rel_moves)
+    return move_positions_by(rel_moves)
   end
 
 end
@@ -170,17 +175,18 @@ class Pawn < Piece
     @has_moved = false
   end
   
-  def move_options
-    rel_moves = {p1: [], p2: []}
+  def move_options(board)
+    moves = {
+      p1: [move_pos_by([0, 1]), move_pos_by([0, 2])],
+      p2: [move_pos_by([0, -1]), move_pos_by([0, -2])]
+    }
 
-    rel_moves[:p1].append [0, 1]
-    rel_moves[:p2].append [0, -1]
-
-    unless @has_moved
-      rel_moves[:p1].append [0, 2]
-      rel_moves[:p2].append [0, -2]
+    if board.at(moves[@team][0]).is_a? Piece
+      moves[@team] = []
+    elsif board.at(moves[@team][1]).is_a? Piece or @has_moved
+      moves[@team].pop
     end
 
-    return move_positions_from(rel_moves[@team])
+    return moves[@team]
   end
 end

@@ -17,10 +17,23 @@ class Board
     take_turn
   end
 
+  def at(*args)
+    case args.size
+    when 1
+      pos = args[0]
+      x, y = pos
+      return @content[y][x]
+    when 2
+      x = args[0]
+      y = args[1]
+      return @content[y][x]
+    end
+  end
+
   def show_moves(piece)
     piece.select
 
-    moves = piece.move_options.select {|move| inbounds? move}
+    moves = piece.move_options(self).select {|move| inbounds? move}
     
     for move in moves
       if inbounds? move

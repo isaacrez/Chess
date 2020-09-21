@@ -16,7 +16,7 @@ module TurnManager
       selected = @content[y][x]
 
       if valid_selection? selected
-        show_moves selected
+        show_moves(selected)
         break
       end
     end
