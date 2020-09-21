@@ -17,6 +17,27 @@ class Board
     
     take_turn
   end
+
+  def show_moves(piece)
+    piece.toggle
+
+    moves = piece.move_options
+    for move in moves do
+      x, y = move
+      if @content[y][x].is_a? Piece
+        @content[y][x].toggle
+      else
+        @content[y][x] = '?'
+      end
+    end
+
+    display @content
+    piece.toggle
+  end
+
+  def hide_moves
+
+  end
 end
 
 board = Board.new

@@ -14,12 +14,12 @@ module TurnManager
       print "Select a piece to move:\t"
       x, y = get_position
       selected = @content[y][x]
-      break if valid_selection? selected
-    end
 
-    selected.toggle
-    display @content
-    selected.toggle
+      if valid_selection? selected
+        show_moves selected
+        break
+      end
+    end
   end
 
   def valid_selection?(selected)
