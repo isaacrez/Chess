@@ -10,7 +10,7 @@ class Board
   def initialize
     @turn = :p1
 
-    @content = Array.new(@@SIZE[:x]) {Array.new(@@SIZE[:y]) {' '}}
+    @content = Array.new(@@SIZE[:x]) {Array.new(@@SIZE[:y]) {@@INIT_DISPLAY}}
     populate_board @content
     display @content
     
@@ -31,13 +31,13 @@ class Board
   end
 
   def reset_at(*args)
-    modify_at(args.flatten, ' ')
+    modify_at(args.flatten, @@INIT_DISPLAY)
   end
 
   def imply_move_at(*args)
-    modify_at(args.flatten, '?')
+    modify_at(args.flatten, @@MOVE_DISPLAY)
   end
-  
+
   def modify_at(*args)
     x, y, value = nil
     case args.size
