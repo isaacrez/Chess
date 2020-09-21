@@ -1,12 +1,11 @@
+require './lib/board_config'
 require './lib/board_display'
 require './lib/board_populate'
 require './lib/piece'
 require './lib/turn_manager'
 
 class Board
-  include BoardDisplay, BoardPopulate, TurnManager
-
-  @@SIZE = {x: 8, y: 8}
+  include BoardConfig, BoardDisplay, BoardPopulate, TurnManager
 
   def initialize
     @turn = :p1
@@ -23,16 +22,23 @@ class Board
 
     moves = piece.move_options
     for move in moves do
-      x, y = move
-      if @content[y][x].is_a? Piece
-        @content[y][x].toggle
-      else
-        @content[y][x] = '?'
+      if inbounds? move
+        x, y = move
+        if @content[y][x].is_a? Piece
+          @content[y][x].display_attack_by piece
+        else
+          @content[y][x] = '?'
+        end
       end
     end
 
     display @content
     piece.toggle
+  end
+
+  def inbounds?(move)
+    x, y = move
+    (0 <= x && x < @@SIZE[:x]) && (0 <= y && y < @@SIZE[:y])
   end
 
   def hide_moves

@@ -1,4 +1,5 @@
 require './lib/colorize'
+require './lib/board_config'
 
 class Piece
   attr_reader :icon, :team
@@ -38,11 +39,11 @@ class Piece
   end
 
   def move_positions_from(moves)
-    for move in moves[@team] do
+    for move in moves do
       move[0] += @position[0]
       move[1] += @position[1]
     end
-    return moves[@team]   
+    return moves   
   end
 
   public
@@ -54,48 +55,76 @@ class Piece
     @selected = false
   end
 
+  def display_attack_by(piece)
+    unless piece.team == @team
+      @selected = true
+    end
+  end
+
   def to_s
     color(@icon)
   end
 end
 
 class King < Piece
-    def initialize(type, team, position)
+  def initialize(type, team, position)
     super
     @icon = "\u265A"
   end
 end
 
 class Queen < Piece
-    def initialize(type, team, position)
+  def initialize(type, team, position)
     super
     @icon = "\u265B"
   end
 end
 
 class Rook < Piece
-    def initialize(type, team, position)
+  def initialize(type, team, position)
     super
     @icon = "\u265C"
   end
 end
 
 class Bishop < Piece
-    def initialize(type, team, position)
+  include BoardConfig
+
+  def initialize(type, team, position)
     super
     @icon = "\u265D"
+  end
+
+  def move_options
+    rel_moves = []
+    0.upto(@@SIZE[:x] - 1) do |i|
+      rel_moves.append [i, i]
+      rel_moves.append [-i, i]
+      rel_moves.append [i, -i]
+      rel_moves.append [-i, -i]
+    end
+    return move_positions_from(rel_moves)
   end
 end
 
 class Knight < Piece
-    def initialize(type, team, position)
+  def initialize(type, team, position)
     super
     @icon = "\u265E"
   end
+
+  def move_options
+    rel_moves = [
+      [1, 2], [2, 1], [-1, 2], [-2, 1],
+      [-1, -2], [-2, -1], [1, -2], [2, -1]  
+    ]
+    return move_positions_from(rel_moves)
+  end
+
 end
 
 class Pawn < Piece
-    def initialize(type, team, position)
+  def initialize(type, team, position)
     super
     @icon = "\u265F"
     @has_moved = false
@@ -112,6 +141,6 @@ class Pawn < Piece
       rel_moves[:p2].append [0, -2]
     end
 
-    return move_positions_from(rel_moves)
+    return move_positions_from(rel_moves[@team])
   end
 end

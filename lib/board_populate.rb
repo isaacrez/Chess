@@ -27,7 +27,7 @@ module BoardPopulate
     end
 
     def add_ranked
-      pieces = ['rook', 'knight', 'bishop', 'knight', 'queen', 'bishop', 'knight', 'rook']
+      pieces = ['rook', 'knight', 'bishop', 'king', 'queen', 'bishop', 'knight', 'rook']
 
       0.upto 7 do |i|
         @content[0][i] = Piece.make(pieces[i], :p1, [i, 0])

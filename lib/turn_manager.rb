@@ -20,6 +20,9 @@ module TurnManager
         break
       end
     end
+
+    switch
+    take_turn
   end
 
   def valid_selection?(selected)
@@ -58,6 +61,6 @@ module TurnManager
   end
 
   def switch
-    @turn == :p1 ? :p2 : :p1
+    @turn = @turn == :p1 ? :p2 : :p1
   end
 end
