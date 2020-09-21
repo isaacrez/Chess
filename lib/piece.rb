@@ -1,8 +1,8 @@
 require './lib/colorize'
-require './lib/board_config'
+require './lib/piece_modules'
 
 class Piece
-  include BoardConfig
+  include MovementLogic
   attr_reader :icon, :team
 
   def self.make(type, team, position)
@@ -39,35 +39,6 @@ class Piece
     end
   end
 
-  def move_positions_by(moves, board)
-    move_pool = []
-
-    for move in moves do
-      move_pool.append move_pos_by move, board
-      move_pool.pop if move_pool.last.nil?
-    end
-    
-    return move_pool
-  end
-
-  def move_pos_by(move, board)
-    move[0] += @position[0]
-    move[1] += @position[1]
-    if valid_move? move, board
-      return move
-    else
-      return nil
-    end
-  end
-
-  def valid_move?(move, board)
-    inbounds?(move) && not(board.occupied_by?(move, @team))
-  end
-
-  def inbounds?(move)
-    (0 <= move[0] && move[0] < @@SIZE[:x]) && (0 <= move[1] && move[1] < @@SIZE[:y])
-  end
-
   def other_team
     @team == :p1 ? :p2 : :p1
   end
@@ -83,36 +54,6 @@ class Piece
 
   def to_s
     color(@icon)
-  end
-end
-
-module DirectionalMovement
-  include BoardConfig
-
-  def omnidirectional_move
-    return diagonal_move.concat(horizontal_move)
-  end
-
-  def diagonal_move
-    rel_moves = []
-    0.upto(@@SIZE[:x] - 1) do |i|
-      rel_moves.append [i, i]
-      rel_moves.append [-i, i]
-      rel_moves.append [i, -i]
-      rel_moves.append [-i, -i]
-    end
-    return rel_moves
-  end
-
-  def horizontal_move
-    rel_moves = []
-    0.upto(@@SIZE[:x] - 1) do |i|
-      rel_moves.append [i, 0]
-      rel_moves.append [0, i]
-      rel_moves.append [-i, 0]
-      rel_moves.append [0, -i]
-    end
-    return rel_moves
   end
 end
 
@@ -190,14 +131,25 @@ class Pawn < Piece
   
   def move_options(board)
     moves = {
-      p1: [move_pos_by([0, 1], board), move_pos_by([0, 2], board)],
-      p2: [move_pos_by([0, -1], board), move_pos_by([0, -2], board)]
+      p1: move_positions_by([[0, 1], [0, 2]], board),
+      p2: move_positions_by([[0, -1], [0, -2]], board)
     }
 
     if board.occupied? moves[@team][0]
       moves[@team] = []
     elsif board.occupied? moves[@team][1] or @has_moved
       moves[@team].pop
+    end
+
+    attacks = {
+      p1: move_positions_by([[1, 1], [-1, 1]], board),
+      p2: move_positions_by([[1, -1], [-1, -1]], board)
+    }
+
+    for move in attacks[@team]
+      if board.occupied_by? move, other_team
+        moves[@team].append move
+      end
     end
 
     return moves[@team]
