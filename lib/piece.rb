@@ -39,21 +39,29 @@ class Piece
     end
   end
 
-  def move_positions_by(moves)
+  def move_positions_by(moves, board)
     move_pool = []
 
     for move in moves do
-      move_pool.append move_pos_by move
+      move_pool.append move_pos_by move, board
       move_pool.pop if move_pool.last.nil?
     end
     
     return move_pool
   end
 
-  def move_pos_by(move)
+  def move_pos_by(move, board)
     move[0] += @position[0]
     move[1] += @position[1]
-    return move if inbounds? move
+    if valid_move? move, board
+      return move
+    else
+      return nil
+    end
+  end
+
+  def valid_move?(move, board)
+    inbounds?(move) && not(board.occupied_by?(move, @team))
   end
 
   def inbounds?(move)
@@ -167,7 +175,7 @@ class Knight < Piece
 
   def move_options(board)
     moves = move_positions_by([[1, 2], [2, 1], [-1, 2], [-2, 1],
-                              [-1, -2], [-2, -1], [1, -2], [2, -1]])
+                              [-1, -2], [-2, -1], [1, -2], [2, -1]], board)
     moves.select {|move| not board.occupied?(move) || board.occupied_by?(move, other_team)}
     return moves
   end
@@ -182,8 +190,8 @@ class Pawn < Piece
   
   def move_options(board)
     moves = {
-      p1: [move_pos_by([0, 1]), move_pos_by([0, 2])],
-      p2: [move_pos_by([0, -1]), move_pos_by([0, -2])]
+      p1: [move_pos_by([0, 1], board), move_pos_by([0, 2], board)],
+      p2: [move_pos_by([0, -1], board), move_pos_by([0, -2], board)]
     }
 
     if board.occupied? moves[@team][0]
