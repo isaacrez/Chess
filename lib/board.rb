@@ -18,10 +18,11 @@ class Board
   end
 
   def show_moves(piece)
-    piece.toggle
+    piece.select
 
-    moves = piece.move_options
-    for move in moves do
+    moves = piece.move_options.select {|move| inbounds? move}
+    
+    for move in moves
       if inbounds? move
         x, y = move
         if @content[y][x].is_a? Piece
@@ -33,7 +34,8 @@ class Board
     end
 
     display @content
-    piece.toggle
+    hide_moves moves
+    piece.deselect
   end
 
   def inbounds?(move)
@@ -41,8 +43,15 @@ class Board
     (0 <= x && x < @@SIZE[:x]) && (0 <= y && y < @@SIZE[:y])
   end
 
-  def hide_moves
-
+  def hide_moves(moves)
+    for move in moves
+      x, y = move
+      if @content[y][x].is_a? Piece
+        @content[y][x].deselect
+      else
+        @content[y][x] = ' '
+      end
+    end
   end
 end
 

@@ -47,8 +47,8 @@ class Piece
   end
 
   public
-  def toggle
-    @selected = !@selected
+  def select
+    @selected = true
   end
 
   def deselect
