@@ -30,6 +30,26 @@ class Board
     end
   end
 
+  def reset_at(*args)
+    modify_at(args.flatten, ' ')
+  end
+
+  def imply_move_at(*args)
+    modify_at(args.flatten, '?')
+  end
+  
+  def modify_at(*args)
+    x, y, value = nil
+    case args.size
+    when 2
+      x, y = args[0]
+      value = args[1]
+    when 3
+      x, y, value = args
+    end
+    @content[y][x] = value
+  end
+
   def show_moves(piece)
     piece.select
 
@@ -37,11 +57,11 @@ class Board
     
     for move in moves
       if inbounds? move
-        x, y = move
-        if @content[y][x].is_a? Piece
-          @content[y][x].display_attack_by piece
+        tile = self.at(move)
+        if tile.is_a? Piece
+          tile.display_attack_by piece
         else
-          @content[y][x] = '?'
+          imply_move_at move
         end
       end
     end
@@ -58,11 +78,11 @@ class Board
 
   def hide_moves(moves)
     for move in moves
-      x, y = move
-      if @content[y][x].is_a? Piece
-        @content[y][x].deselect
+      tile = at move
+      if tile.is_a? Piece
+        tile.deselect
       else
-        @content[y][x] = ' '
+        reset_at(move)
       end
     end
   end

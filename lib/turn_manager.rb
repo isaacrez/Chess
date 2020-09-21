@@ -12,8 +12,7 @@ module TurnManager
 
     loop do
       print "Select a piece to move:\t"
-      x, y = get_position
-      selected = @content[y][x]
+      selected = at get_position
 
       if valid_selection? selected
         show_moves(selected)
