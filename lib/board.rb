@@ -20,14 +20,30 @@ class Board
   def at(*args)
     case args.size
     when 1
-      pos = args[0]
-      x, y = pos
-      return @content[y][x]
+      x, y = args[0]
     when 2
       x = args[0]
       y = args[1]
-      return @content[y][x]
     end
+
+    @content[y][x]
+  end
+
+  def occupied?(*args)
+    return at(args.flatten).is_a? Piece
+  end
+
+  def occupied_by?(*args)
+    team = args[-1]
+    tile = at(args[0...-1].flatten)
+
+    if tile.is_a? Piece
+      if tile.team == team
+        return true
+      end
+    end
+    
+    return false
   end
 
   def reset_at(*args)
@@ -53,27 +69,18 @@ class Board
   def show_moves(piece)
     piece.select
 
-    moves = piece.move_options(self).select {|move| inbounds? move}
-    
-    for move in moves
-      if inbounds? move
-        tile = self.at(move)
-        if tile.is_a? Piece
-          tile.display_attack_by piece
-        else
-          imply_move_at move
-        end
+    moves = piece.move_options(self)
+    for pos in moves
+      if occupied? pos
+        at(pos).select unless occupied_by? pos, @turn
+      else
+        imply_move_at pos
       end
     end
 
     display @content
     hide_moves moves
     piece.deselect
-  end
-
-  def inbounds?(move)
-    x, y = move
-    (0 <= x && x < @@SIZE[:x]) && (0 <= y && y < @@SIZE[:y])
   end
 
   def hide_moves(moves)

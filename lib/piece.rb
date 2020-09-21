@@ -2,6 +2,7 @@ require './lib/colorize'
 require './lib/board_config'
 
 class Piece
+  include BoardConfig
   attr_reader :icon, :team
 
   def self.make(type, team, position)
@@ -39,16 +40,28 @@ class Piece
   end
 
   def move_positions_by(moves)
+    move_pool = []
+
     for move in moves do
-      move_pos_by move
+      move_pool.append move_pos_by move
+      move_pool.pop if move_pool.last.nil?
     end
-    return moves   
+    
+    return move_pool
   end
 
   def move_pos_by(move)
     move[0] += @position[0]
     move[1] += @position[1]
-    return move
+    return move if inbounds? move
+  end
+
+  def inbounds?(move)
+    (0 <= move[0] && move[0] < @@SIZE[:x]) && (0 <= move[1] && move[1] < @@SIZE[:y])
+  end
+
+  def other_team
+    @team == :p1 ? :p2 : :p1
   end
 
   public
@@ -58,12 +71,6 @@ class Piece
 
   def deselect
     @selected = false
-  end
-
-  def display_attack_by(piece)
-    unless piece.team == @team
-      @selected = true
-    end
   end
 
   def to_s
@@ -159,13 +166,11 @@ class Knight < Piece
   end
 
   def move_options(board)
-    rel_moves = [
-      [1, 2], [2, 1], [-1, 2], [-2, 1],
-      [-1, -2], [-2, -1], [1, -2], [2, -1]  
-    ]
-    return move_positions_by(rel_moves)
+    moves = move_positions_by([[1, 2], [2, 1], [-1, 2], [-2, 1],
+                              [-1, -2], [-2, -1], [1, -2], [2, -1]])
+    moves.select {|move| not board.occupied?(move) || board.occupied_by?(move, other_team)}
+    return moves
   end
-
 end
 
 class Pawn < Piece
@@ -181,9 +186,9 @@ class Pawn < Piece
       p2: [move_pos_by([0, -1]), move_pos_by([0, -2])]
     }
 
-    if board.at(moves[@team][0]).is_a? Piece
+    if board.occupied? moves[@team][0]
       moves[@team] = []
-    elsif board.at(moves[@team][1]).is_a? Piece or @has_moved
+    elsif board.occupied? moves[@team][1] or @has_moved
       moves[@team].pop
     end
 
