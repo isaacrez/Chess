@@ -21,8 +21,8 @@ module BoardPopulate
 
     def add_pawns
       0.upto 7 do |i|
-        @content[1][i] = Piece.new('pawn', :p1)
-        @content[6][i] = Piece.new('pawn', :p2)
+        @content[1][i] = Piece.make('pawn', :p1)
+        @content[6][i] = Piece.make('pawn', :p2)
       end
     end
 
@@ -30,8 +30,8 @@ module BoardPopulate
       pieces = ['rook', 'knight', 'bishop', 'knight', 'queen', 'bishop', 'knight', 'rook']
 
       0.upto 7 do |i|
-        @content[0][i] = Piece.new(pieces[i], :p1)
-        @content[7][i] = Piece.new(pieces[i], :p2)
+        @content[0][i] = Piece.make(pieces[i], :p1)
+        @content[7][i] = Piece.make(pieces[i], :p2)
       end
     end
   end
