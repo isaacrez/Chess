@@ -66,36 +66,14 @@ class Piece
   end
 end
 
-class King < Piece
-  def initialize(type, team, position)
-    super
-    @icon = "\u265A"
-  end
-end
-
-class Queen < Piece
-  def initialize(type, team, position)
-    super
-    @icon = "\u265B"
-  end
-end
-
-class Rook < Piece
-  def initialize(type, team, position)
-    super
-    @icon = "\u265C"
-  end
-end
-
-class Bishop < Piece
+module DirectionalMovement
   include BoardConfig
 
-  def initialize(type, team, position)
-    super
-    @icon = "\u265D"
+  def omnidirectional_move
+    return diagonal_move.concat(horizontal_move)
   end
 
-  def move_options
+  def diagonal_move
     rel_moves = []
     0.upto(@@SIZE[:x] - 1) do |i|
       rel_moves.append [i, i]
@@ -103,7 +81,69 @@ class Bishop < Piece
       rel_moves.append [i, -i]
       rel_moves.append [-i, -i]
     end
-    return move_positions_from(rel_moves)
+    return rel_moves
+  end
+
+  def horizontal_move
+    rel_moves = []
+    0.upto(@@SIZE[:x] - 1) do |i|
+      rel_moves.append [i, 0]
+      rel_moves.append [0, i]
+      rel_moves.append [-i, 0]
+      rel_moves.append [0, -i]
+    end
+    return rel_moves
+  end
+end
+
+class King < Piece
+  def initialize(type, team, position)
+    super
+    @icon = "\u265A"
+  end
+
+  def move_options
+    rel_moves = [[1, 0], [1, 1], [0, 1], [-1, 0], [-1, -1], [0, -1], [-1, 1], [1, -1]]
+    return move_positions_from rel_moves
+  end
+end
+
+class Queen < Piece
+  include DirectionalMovement
+
+  def initialize(type, team, position)
+    super
+    @icon = "\u265B"
+  end
+
+  def move_options
+    return move_positions_from omnidirectional_move
+  end
+end
+
+class Rook < Piece
+  include DirectionalMovement
+
+  def initialize(type, team, position)
+    super
+    @icon = "\u265C"
+  end
+
+  def move_options
+    return move_positions_from horizontal_move
+  end
+end
+
+class Bishop < Piece
+  include DirectionalMovement
+
+  def initialize(type, team, position)
+    super
+    @icon = "\u265D"
+  end
+
+  def move_options
+    return move_positions_from diagonal_move
   end
 end
 
