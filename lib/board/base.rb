@@ -1,8 +1,8 @@
 require './lib/board/config'
 require './lib/board/display'
 require './lib/board/populate'
+require './lib/board/turn_manager'
 require './lib/piece/base'
-require './lib/turn_manager'
 
 class Board
   include BoardConfig, BoardDisplay, BoardPopulate, TurnManager
@@ -14,8 +14,6 @@ class Board
     @content = Array.new(@@SIZE[:x]) {Array.new(@@SIZE[:y]) {@@INIT_DISPLAY}}
     populate_board @content
     display self
-    
-    take_turn
   end
 
   def at(*args)
@@ -95,5 +93,3 @@ class Board
     end
   end
 end
-
-board = Board.new
