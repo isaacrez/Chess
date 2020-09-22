@@ -8,6 +8,18 @@ module TurnManager
   def take_turn
     color = @@PLAYER_COLORS[@turn]
     puts "It is #{color}'s turn"
+
+    selected = select_piece
+    until confirm_selection
+      selected = select_piece
+    end
+
+    apply_move selected
+    switch
+    take_turn
+  end
+
+  def select_piece
     selected = nil
 
     loop do
@@ -20,8 +32,38 @@ module TurnManager
       end
     end
 
-    switch
-    take_turn
+    puts "Selected:\t#{selected}"
+    return selected
+  end
+
+  def apply_move(selected)
+    valid_moves = selected.move_options self
+    selected_move = nil
+    until valid_moves.include? selected_move
+      print "Select a destination:\t"
+      selected_move = get_position
+      puts "You can't move there!" unless valid_moves.include? selected_move
+    end
+
+    reset_at selected.position
+    x, y = selected_move
+    @content[y][x] = selected
+    display self
+  end
+
+  def confirm_selection
+    loop do
+      print "Is this the correct? (Y/n):\t"
+      answer = gets.chomp
+
+      if answer.downcase == 'y'
+        return true
+      elsif answer.downcase == 'n'
+        return false
+      else
+        puts "I'm sorry, I didn't understand that"
+      end
+    end
   end
 
   def valid_selection?(selected)

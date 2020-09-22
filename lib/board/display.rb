@@ -1,7 +1,7 @@
 module BoardDisplay
 
-  def display(board_content)
-    display_obj = Displayer.new board_content
+  def display(board)
+    display_obj = Displayer.new board
     display_obj.display
   end
 
@@ -20,8 +20,8 @@ module BoardDisplay
       left_inter: "\u251C"
     }
 
-    def initialize(board_content)
-      @content = board_content
+    def initialize(board)
+      @content = board.content
     end
 
     def display

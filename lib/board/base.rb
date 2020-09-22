@@ -6,13 +6,14 @@ require './lib/turn_manager'
 
 class Board
   include BoardConfig, BoardDisplay, BoardPopulate, TurnManager
+  attr_reader :content
 
   def initialize
     @turn = :p1
 
     @content = Array.new(@@SIZE[:x]) {Array.new(@@SIZE[:y]) {@@INIT_DISPLAY}}
     populate_board @content
-    display @content
+    display self
     
     take_turn
   end
@@ -78,7 +79,7 @@ class Board
       end
     end
 
-    display @content
+    display self
     hide_moves moves
     piece.deselect
   end
