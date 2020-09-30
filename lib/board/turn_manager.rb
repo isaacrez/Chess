@@ -84,21 +84,34 @@ module TurnManager
     begin
       get_valid_position_input
     rescue
-      print "Invalid input! Use two numbers, separated by a comma [i.e. 1,0]\n\n"
+      print "Invalid input! Use a letter followed by a number (i.e. A4)\n\n"
       print "Select a position:\t"
       get_position
     end
   end
 
   def get_valid_position_input
-    input = gets.chomp.split(',')
+    input = gets.chomp.upcase.split('')
+
     raise "Wrong number of arguments" unless input.length == 2
-    raise "Non-numeric arguments" unless is_numeric?(input[0]) && is_numeric?(input[1])
-    input.map!(&:to_i)
+    raise "First value must be a character between A and H!" unless valid_alphabetic?(input[0])
+    raise "Second value must be a number between 1 and 8!" unless valid_numeric?(input[1])
+
+    return input_to_pos input
   end
 
-  def is_numeric?(string)
-    '0' <= string && string <= '9'
+  def valid_alphabetic?(string)
+    'A' <= string && string <= 'H'
+  end
+
+  def valid_numeric?(string)
+    '1' <= string && string <= '8'
+  end
+
+  def input_to_pos(input)
+    input[0] = input[0].codepoints[0] - 65
+    input[1] = input[1].to_i - 1
+    return input
   end
 
   def switch
