@@ -79,7 +79,7 @@ class Queen < Piece
   end
 
   def move_options(board)
-    return move_positions_by omnidirectional_move, board
+    return omnidirectional_move(board)
   end
 end
 
@@ -92,7 +92,7 @@ class Rook < Piece
   end
 
   def move_options(board)
-    return move_positions_by horizontal_move, board
+    return horizontal_move(board)
   end
 end
 
@@ -105,7 +105,7 @@ class Bishop < Piece
   end
 
   def move_options(board)
-    return move_positions_by diagonal_move, board
+    return diagonal_move(board)
   end
 end
 
