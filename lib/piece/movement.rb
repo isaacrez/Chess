@@ -33,18 +33,58 @@ module MovementLogic
   end
 end
 
-module HORZ_DIRectionalMovement
+module DirectionalMovement
   include BoardConfig
 
   @@HORZ_DIR = {UP: 0, RIGHT: 1, DOWN: 2, LEFT: 3}
 
-  def omni_directional_move
-    return diagonal_move.concat(horizontal_move)
+  def omnidirectional_move(board)
+    return diagonal_move(board).concat(horizontal_move(board))
   end
 
   def diagonal_move(board)
     moves = []
     x_i, y_i = @position
+
+    x_iter = ((x_i + 1)..8).to_a
+    y_iter = ((y_i + 1)..8).to_a
+    length = [x_iter.size, y_iter.size].min - 1
+
+    0.upto(length) do |i|
+      pos = [x_iter[i], y_iter[i]]
+      valid_move?(pos, board) ? moves.append(pos) : break
+      board.occupied?(pos) ? break : next
+    end
+
+    x_iter = ((x_i + 1)..8).to_a
+    y_iter = (0...y_i).to_a.reverse
+    length = [x_iter.size, y_iter.size].min - 1
+
+    0.upto(length) do |i|
+      pos = [x_iter[i], y_iter[i]]
+      valid_move?(pos, board) ? moves.append(pos) : break
+      board.occupied?(pos) ? break : next
+    end
+
+    x_iter = (0...x_i).to_a.reverse
+    y_iter = (0...y_i).to_a.reverse
+    length = [x_iter.size, y_iter.size].min - 1
+
+    0.upto(length) do |i|
+      pos = [x_iter[i], y_iter[i]]
+      valid_move?(pos, board) ? moves.append(pos) : break
+      board.occupied?(pos) ? break : next
+    end
+
+    x_iter = (0...x_i).to_a.reverse
+    y_iter = ((y_i + 1)..8).to_a
+    length = [x_iter.size, y_iter.size].min - 1
+
+    0.upto(length) do |i|
+      pos = [x_iter[i], y_iter[i]]
+      valid_move?(pos, board) ? moves.append(pos) : break
+      board.occupied?(pos) ? break : next
+    end
 
     return moves
   end
@@ -53,20 +93,20 @@ module HORZ_DIRectionalMovement
     moves = []
     x_i, y_i = @position
 
-    @@HORZ_DIR.each_value do |HORZ_DIR|
-      moves.concat(add_horizontal(board, HORZ_DIR))
+    @@HORZ_DIR.each_value do |dir|
+      moves.concat(add_horizontal(board, dir))
     end
 
     return moves
   end
 
-  def add_horizontal(board, HORZ_DIR)
+  def add_horizontal(board, dir)
     moves = []
     x, y = @position
-    iterator = get_horz_iterator(HORZ_DIR)
+    iterator = get_horz_iterator(dir)
 
     iterator.each do |i|
-      pos = is_vertical?(HORZ_DIR) ? [x, i] : [i, y]
+      pos = is_vertical?(dir) ? [x, i] : [i, y]
       valid_move?(pos, board) ? moves.append(pos) : break
       board.occupied?(pos) ? break : next
     end
@@ -74,13 +114,13 @@ module HORZ_DIRectionalMovement
     return moves
   end
 
-  def is_vertical?(HORZ_DIR)
-    HORZ_DIR == @@HORZ_DIR[:UP] || HORZ_DIR == @@HORZ_DIR[:DOWN]
+  def is_vertical?(dir)
+    dir == @@HORZ_DIR[:UP] || dir == @@HORZ_DIR[:DOWN]
   end
 
-  def get_horz_iterator(HORZ_DIR)
+  def get_horz_iterator(dir)
     x, y = @position
-    case HORZ_DIR
+    case dir
     when @@HORZ_DIR[:UP]
       iterator = (0...y).to_a.reverse
     when @@HORZ_DIR[:RIGHT]
