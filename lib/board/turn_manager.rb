@@ -28,7 +28,7 @@ module TurnManager
 
       if valid_selection? selected
         show_moves(selected)
-        break
+        selected.move_options(self).length == 0 ? print("You have no moves from there!\n\n") : break
       end
     end
 

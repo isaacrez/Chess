@@ -37,15 +37,16 @@ module HorizontalMovement
   @@HORZ_DIR = {UP: 0, RIGHT: 1, DOWN: 2, LEFT: 3}
 
   def horizontal_move(board)
-    HorizontalMove.new(board, @position).get_moves
+    HorizontalMove.new(board, self).get_moves
   end
 
   class HorizontalMove
     include MovementLogic
 
-    def initialize(board, position)
+    def initialize(board, piece)
       @board = board
-      @position = position
+      @position = piece.position
+      @team = piece.team
       @moves = []
       config_iterators
     end
@@ -87,14 +88,15 @@ end
 
 module DiagonalMovement
   def diagonal_move(board)
-    DiagonalMove.new(board, @position).get_moves
+    DiagonalMove.new(board, self).get_moves
   end
 
   class DiagonalMove
     include MovementLogic
 
-    def initialize(board, position)
-      config_iterators(position)
+    def initialize(board, piece)
+      config_iterators(piece.position)
+      @team = piece.team
       @board = board
       @moves = []
     end
