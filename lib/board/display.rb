@@ -22,10 +22,12 @@ module BoardDisplay
 
     def initialize(board)
       @content = board.content
+      @curr_row = 0
     end
 
     def display
-      output = top_bar
+      output = add_horizontal_label
+      output += top_bar
 
       board = []
       for row in @content do
@@ -38,26 +40,37 @@ module BoardDisplay
     end
 
     private
+    def add_horizontal_label
+      labels = "ABCDEFGH"
+      ' ' * 4 + labels.split('').join(' ' * 3)
+    end
+
     def top_bar
-      output = @@GRID[:top_left]
+      output = "\n  #{@@GRID[:top_left]}"
       output += (@@GRID[:horz] * 3 + @@GRID[:top_inter]) * 7
       output += @@GRID[:horz] * 3 + @@GRID[:top_right] + "\n"
     end
 
     def prettify(row)
-      output = @@GRID[:vert] + ' '
+      output = add_vertical_label
+      output += ' ' + @@GRID[:vert] + ' '
       output += row.join(@@GRID[:vert].center(3))
       output += ' ' + @@GRID[:vert]
     end
 
+    def add_vertical_label
+      @curr_row += 1
+      @curr_row.to_s
+    end
+
     def mid_bar
-      output = "\n" + @@GRID[:left_inter]
+      output = "\n  " + @@GRID[:left_inter]
       output += (@@GRID[:horz] * 3 + @@GRID[:full_inter]) * 7
       output += @@GRID[:horz] * 3 + @@GRID[:right_inter] + "\n"
     end
 
     def bottom_bar
-      output = "\n" + @@GRID[:bottom_left]
+      output = "\n  " + @@GRID[:bottom_left]
       output += (@@GRID[:horz] * 3 + @@GRID[:bottom_inter]) * 7
       output += @@GRID[:horz] * 3 + @@GRID[:bottom_right]
     end
