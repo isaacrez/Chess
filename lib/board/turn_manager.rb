@@ -47,6 +47,7 @@ module TurnManager
 
     reset_at selected.position
     x, y = selected_move
+    selected.position = selected_move
     @content[y][x] = selected
     display self
   end

@@ -3,7 +3,8 @@ require './lib/piece/movement'
 
 class Piece
   include MovementLogic
-  attr_reader :icon, :team, :position
+  attr_accessor :position
+  attr_reader :icon, :team
 
   def self.make(type, team, position)
     case type
