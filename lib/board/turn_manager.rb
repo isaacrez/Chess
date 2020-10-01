@@ -52,7 +52,7 @@ module TurnManager
 
   def confirm_selection
     loop do
-      print "Is this the correct? (Y/n):\t"
+      print "Is this correct? (Y/n):\t"
       answer = gets.chomp
 
       if answer.downcase == 'y'
