@@ -16,52 +16,29 @@ class Board
     display self
   end
 
-  def at(*args)
-    case args.size
-    when 1
-      x, y = args[0]
-    when 2
-      x = args[0]
-      y = args[1]
-    end
-
-    @content[y][x]
+  def at(pos)
+    x, y = pos
+    return @content[y][x]
   end
 
-  def occupied?(*args)
-    return at(args.flatten).is_a? Piece
+  def occupied?(pos)
+    return at(pos).is_a? Piece
   end
 
-  def occupied_by?(*args)
-    team = args[-1]
-    tile = at(args[0...-1].flatten)
-
-    if tile.is_a? Piece
-      if tile.team == team
-        return true
-      end
-    end
-    
-    return false
+  def occupied_by?(pos, team)
+    occupied?(pos) ? at(pos).team == team : false
   end
 
-  def reset_at(*args)
-    modify_at(args.flatten, @@INIT_DISPLAY)
+  def reset_at(pos)
+    modify_at pos, @@INIT_DISPLAY
   end
 
-  def imply_move_at(*args)
-    modify_at(args.flatten, @@MOVE_DISPLAY)
+  def imply_move_at(pos)
+    modify_at pos, @@MOVE_DISPLAY
   end
 
-  def modify_at(*args)
-    x, y, value = nil
-    case args.size
-    when 2
-      x, y = args[0]
-      value = args[1]
-    when 3
-      x, y, value = args
-    end
+  def modify_at(pos, value)
+    x, y = pos
     @content[y][x] = value
   end
 

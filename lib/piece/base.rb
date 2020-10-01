@@ -123,7 +123,7 @@ class Knight < Piece
 
   def move_options
     moves = move_positions_by([[1, 2], [2, 1], [-1, 2], [-2, 1],
-                              [-1, -2], [-2, -1], [1, -2], [2, -1]], @board)
+                              [-1, -2], [-2, -1], [1, -2], [2, -1]])
     moves.select {|move| not @board.occupied?(move) || @board.occupied_by?(move, other_team)}
     return moves
   end
