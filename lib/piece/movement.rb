@@ -3,29 +3,29 @@ require './lib/board/config'
 module MovementLogic
   include BoardConfig
   
-  def move_positions_by(moves, board)
+  def move_positions_by(moves)
     move_pool = []
 
     for move in moves do
-      move_pool.append move_pos_by move, board
+      move_pool.append move_pos_by move
       move_pool.pop if move_pool.last.nil?
     end
     
     return move_pool
   end
 
-  def move_pos_by(move, board)
+  def move_pos_by(move)
     move[0] += @position[0]
     move[1] += @position[1]
-    if valid_move? move, board
+    if valid_move? move
       return move
     else
       return nil
     end
   end
 
-  def valid_move?(move, board)
-    inbounds?(move) && not(board.occupied_by?(move, @team))
+  def valid_move?(move)
+    inbounds?(move) && not(@board.occupied_by?(move, @team))
   end
 
   def inbounds?(move)
@@ -36,8 +36,8 @@ end
 module HorizontalMovement
   @@HORZ_DIR = {UP: 0, RIGHT: 1, DOWN: 2, LEFT: 3}
 
-  def horizontal_move(board)
-    HorizontalMove.new(board, self).get_moves
+  def horizontal_move
+    HorizontalMove.new(@board, self).get_moves
   end
 
   class HorizontalMove
@@ -75,7 +75,7 @@ module HorizontalMovement
   
       iterator.each do |i|
         pos = is_vertical?(dir) ? [x, i] : [i, y]
-        valid_move?(pos, @board) ? @moves.append(pos) : break
+        valid_move?(pos) ? @moves.append(pos) : break
         @board.occupied?(pos) ? break : next
       end
     end
@@ -87,8 +87,8 @@ module HorizontalMovement
 end
 
 module DiagonalMovement
-  def diagonal_move(board)
-    DiagonalMove.new(board, self).get_moves
+  def diagonal_move
+    DiagonalMove.new(@board, self).get_moves
   end
 
   class DiagonalMove
@@ -131,7 +131,7 @@ module DiagonalMovement
       length = move_length(dir)
       0.upto(length) do |i|
         pos = [@x_iter[dir][i], @y_iter[dir][i]]
-        valid_move?(pos, @board) ? @moves.append(pos) : break
+        valid_move?(pos) ? @moves.append(pos) : break
         @board.occupied?(pos) ? break : next
       end
     end
@@ -147,7 +147,7 @@ module DirectionalMovement
   include DiagonalMovement
   include HorizontalMovement
 
-  def omnidirectional_move(board)
-    return diagonal_move(board).concat(horizontal_move(board))
+  def omnidirectional_move
+    return diagonal_move.concat(horizontal_move)
   end
 end

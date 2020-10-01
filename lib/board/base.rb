@@ -12,7 +12,7 @@ class Board
     @turn = :p1
 
     @content = Array.new(@@SIZE[:x]) {Array.new(@@SIZE[:y]) {@@INIT_DISPLAY}}
-    populate_board @content
+    populate_board
     display self
   end
 
@@ -68,7 +68,7 @@ class Board
   def show_moves(piece)
     piece.select
 
-    moves = piece.move_options(self)
+    moves = piece.move_options
     for pos in moves
       if occupied? pos
         at(pos).select unless occupied_by? pos, @turn

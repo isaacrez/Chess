@@ -28,7 +28,7 @@ module TurnManager
 
       if valid_selection? selected
         show_moves(selected)
-        selected.move_options(self).length == 0 ? print("You have no moves from there!\n\n") : break
+        selected.move_options.length == 0 ? print("You have no moves from there!\n\n") : break
       end
     end
 
@@ -37,7 +37,7 @@ module TurnManager
   end
 
   def apply_move(selected)
-    valid_moves = selected.move_options self
+    valid_moves = selected.move_options
     selected_move = nil
     until valid_moves.include? selected_move
       print "Select a destination:\t"
@@ -46,10 +46,7 @@ module TurnManager
     end
 
     reset_at selected.position
-    selected.move_to selected_move, self
-    # x, y = selected_move
-    # selected.position = selected_move
-    # @content[y][x] = selected
+    selected.move_to selected_move
     display self
   end
 

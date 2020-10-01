@@ -1,15 +1,15 @@
 module BoardPopulate
 
-  def populate_board(content)
-    populater = BoardPopulater.new(content)
+  def populate_board
+    populater = BoardPopulater.new(self)
     return populater.content
   end
 
   class BoardPopulater
     attr_reader :content
 
-    def initialize(content)
-      @content = content
+    def initialize(board)
+      @board = board
       populate_board
     end
 
@@ -37,7 +37,7 @@ module BoardPopulate
 
     def add_piece(type, player, position)
       x, y = position
-      @content[y][x] = Piece.make(type, player, position)
+      @board.content[y][x] = Piece.make(type, player, position, @board)
     end
   end
 
