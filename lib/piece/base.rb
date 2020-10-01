@@ -53,6 +53,11 @@ class Piece
     @selected = false
   end
 
+  def move_to(move, board)
+    self.position = move
+    board.modify_at move, self
+  end
+
   def to_s
     color(@icon)
   end
